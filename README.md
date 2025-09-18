@@ -2,6 +2,9 @@
 ![demo演示](assets/animation.gif)
 
 [![Docs](https://img.shields.io/badge/Docs-Complete-green)](https://rayburstray.github.io/MiniAbl_Wiki/)
+| [📄 查看完整文档](https://rayburstray.github.io/MiniAbl_Wiki/) |
+|-----------------------------------------------------------------------------------------|
+
 ## ✨ 支持环境:
 - minihack、minigrid
 ## 🚀 视觉识别:
