@@ -1,9 +1,16 @@
 # MiniABL： 一个使用abl完成强化学习任务的框架
 ![demo演示](assets/animation.gif)
 
-[![Docs](https://img.shields.io/badge/Docs-Complete-green)](https://rayburstray.github.io/MiniAbl_Wiki/)
-| [📄 查看完整文档](https://rayburstray.github.io/MiniAbl_Wiki/) |
-|-----------------------------------------------------------------------------------------|
+<!-- 居中的徽章 -->
+<p align="center">
+  [![Docs](https://img.shields.io/badge/Docs-Complete-green)](https://rayburstray.github.io/MiniAbl_Wiki/)
+</p>
+
+<!-- 居中的按钮式链接 -->
+<p align="center">
+  | [📄 查看完整文档](https://rayburstray.github.io/MiniAbl_Wiki/) |
+  |--------------------------------------------------------------|
+</p>
 
 ## ✨ 支持环境:
 - minihack、minigrid
