@@ -4,6 +4,7 @@ from collections import deque
 from enum import Enum
 from loguru import logger
 
+
 # 0-虚空，1-墙壁，2-地板，3-门，4-钥匙，5-玩家
 class Object(Enum):
     EMPTY = 0
@@ -14,7 +15,10 @@ class Object(Enum):
     PLAYER = 5
     FINAL = 6
 
-class Action(Enum): #这部分在环境创建那里可以看，为了简单我没有使用斜着走的策略，所以会有跳数字的情况
+
+class Action(
+    Enum
+):  # 这部分在环境创建那里可以看，为了简单我没有使用斜着走的策略，所以会有跳数字的情况
     North = 0
     East = 1
     South = 2
@@ -23,30 +27,31 @@ class Action(Enum): #这部分在环境创建那里可以看，为了简单我�
     Apply = 9
     Open = 10
 
+
 class MyAgent(PythonAgent):
-    def __init__(self, conf:dict):
+    def __init__(self, conf: dict):
         super().__init__(conf)
-        self.act_queue = deque() # 决策队列
-        self.see_key = False # 是否看见钥匙
-        self.has_key = False # 是否持有钥匙
-        self.see_door = False # 是否看见门
-        self.open_door = False # 是否打开门
-        self.see_final = False # 是否看见最终点
-        self.constant = False # 是否正在执行不可打断行为
+        self.act_queue = deque()  # 决策队列
+        self.see_key = False  # 是否看见钥匙
+        self.has_key = False  # 是否持有钥匙
+        self.see_door = False  # 是否看见门
+        self.open_door = False  # 是否打开门
+        self.see_final = False  # 是否看见最终点
+        self.constant = False  # 是否正在执行不可打断行为
 
     def act(self, obs: np.ndarray):
-        logger.info(obs[7:17, 35: 55])
-        self.update_state(obs) # 更新观测状态
+        logger.info(obs[7:17, 35:55])
+        self.update_state(obs)  # 更新观测状态
         if self.constant and self.act_queue:
             return self.act_queue.popleft()
         if not self.act_queue:
-            self.constant = False # 解除不可打断行为
+            self.constant = False  # 解除不可打断行为
         if not self.see_key:
             self.bfs(obs, Object.EMPTY.value)
             return self.act_queue.popleft()
         if not self.has_key:
             self.bfs(obs, Object.KEY.value)
-            self.act_queue.append(Action.Pickup.value) # 获取钥匙
+            self.act_queue.append(Action.Pickup.value)  # 获取钥匙
             self.has_key = True
             self.constant = True
             return self.act_queue.popleft()
@@ -54,7 +59,7 @@ class MyAgent(PythonAgent):
             self.bfs(obs, Object.EMPTY.value)
             return self.act_queue.popleft()
         if not self.open_door:
-            if self.boy_next_door(obs): # 检测是否相邻门
+            if self.boy_next_door(obs):  # 检测是否相邻门
                 self.act_queue.clear()
                 self.act_queue.append(Action.Apply.value)
                 self.act_queue.append(Action.Open.value)
@@ -70,7 +75,7 @@ class MyAgent(PythonAgent):
             self.bfs(obs, Object.FINAL.value)
             self.constant = True
             return self.act_queue.popleft()
-        
+
     def update_state(self, obs: np.ndarray):
         for i in range(obs.shape[0]):
             for j in range(obs.shape[1]):
@@ -80,8 +85,8 @@ class MyAgent(PythonAgent):
                     self.see_door = True
                 elif obs[i][j] == Object.FINAL.value:
                     self.see_final = True
-        
-    def locate(self, obs: np.ndarray, index: int): # 定位特定物体捏
+
+    def locate(self, obs: np.ndarray, index: int):  # 定位特定物体捏
         for i in range(obs.shape[0]):
             for j in range(obs.shape[1]):
                 if obs[i][j] == index:
@@ -113,26 +118,25 @@ class MyAgent(PythonAgent):
                 self.act_queue.clear()
                 self.act_queue.extend(actions)
                 return
-            
+
             for dx, dy in directions:
                 next_x, next_y = cur[0] + dx, cur[1] + dy
 
                 # 检查边界
                 if 0 <= next_x < obs.shape[0] and 0 <= next_y < obs.shape[1]:
                     # 检查是否可移动且未访问过
-                    if not visited[next_x][next_y] and self.move_available(obs[next_x][next_y]):
+                    if not visited[next_x][next_y] and self.move_available(
+                        obs[next_x][next_y]
+                    ):
                         visited[next_x][next_y] = True
                         queue.append((next_x, next_y))
                         parent[(next_x, next_y)] = cur
 
-    
-        
-    
-    def move_available(self, type:int):
+    def move_available(self, type: int):
         if type == Object.WALL.value:
             return False
         return True
-    
+
     def transform_from_pos_to_action(self, pos_deque: deque):
         # 把位置队列转换成动作队列
         action_deque = deque()
@@ -146,7 +150,7 @@ class MyAgent(PythonAgent):
             elif pos_deque[i][1] < pos_deque[i + 1][1]:
                 action_deque.append(Action.East.value)
         return action_deque
-    
+
     def boy_next_door(self, obs: np.ndarray) -> bool:
         start = self.locate(obs, Object.PLAYER.value)
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
@@ -156,13 +160,3 @@ class MyAgent(PythonAgent):
                 if obs[next_x][next_y] == Object.DOOR.value:
                     return True
         return False
-
-
-        
-        
-
-
-
-
-        
-        

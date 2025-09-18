@@ -1,0 +1,14 @@
+gymnasium==1.0.0
+loguru==0.7.2
+minihack==1.0.2
+nle==1.2.0
+numpy==2.3.3
+Pillow==11.3.0
+pyswip==0.3.3
+PyYAML==6.0.2
+PyYAML==6.0.2
+sympy==1.13.1
+torch==2.6.0
+torchvision==0.21.0
+tqdm==4.67.1
+wandb==0.21.4
