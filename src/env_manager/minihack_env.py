@@ -3,6 +3,7 @@ import gymnasium as gym
 import numpy as np
 from nle import nethack
 from loguru import logger
+import minihack
 
 
 # minihack 可选择的环境列表：https://minihack.readthedocs.io/en/latest/envs/index.html
@@ -31,8 +32,8 @@ class FinalEnv(EnvInterface):
         # logger.info('获取环境图像')
         return self.obs["pixel"]
 
-    def step(self, action):
+    def step(self, action:int) -> tuple[np.ndarray, bool]:
         self.obs, _, terminated, _, _ = self.env.step(action)
         self.save_img(self.obs["pixel"])
         self.save_policy(action)
-        return self.obs, terminated
+        return (self.obs, terminated)

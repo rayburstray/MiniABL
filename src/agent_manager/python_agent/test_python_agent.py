@@ -3,7 +3,7 @@ import numpy as np
 from collections import deque
 from enum import Enum
 from loguru import logger
-
+from typing import Dict, Tuple, Optional  # 新增：用于显式声明类型
 
 # 0-虚空，1-墙壁，2-地板，3-门，4-钥匙，5-玩家
 class Object(Enum):
@@ -39,7 +39,7 @@ class MyAgent(PythonAgent):
         self.see_final = False  # 是否看见最终点
         self.constant = False  # 是否正在执行不可打断行为
 
-    def act(self, obs: np.ndarray):
+    def act(self, obs: np.ndarray[int, np.dtype[np.int_]]):
         logger.info(obs[7:17, 35:55])
         self.update_state(obs)  # 更新观测状态
         if self.constant and self.act_queue:
@@ -76,7 +76,7 @@ class MyAgent(PythonAgent):
             self.constant = True
             return self.act_queue.popleft()
 
-    def update_state(self, obs: np.ndarray):
+    def update_state(self, obs: np.ndarray[int, np.dtype[np.int_]]):
         for i in range(obs.shape[0]):
             for j in range(obs.shape[1]):
                 if obs[i][j] == Object.KEY.value:
@@ -86,13 +86,15 @@ class MyAgent(PythonAgent):
                 elif obs[i][j] == Object.FINAL.value:
                     self.see_final = True
 
-    def locate(self, obs: np.ndarray, index: int):  # 定位特定物体捏
+    def locate(self, obs: np.ndarray[int, np.dtype[np.int_]], index: int) -> tuple:  # 定位特定物体捏
         for i in range(obs.shape[0]):
             for j in range(obs.shape[1]):
                 if obs[i][j] == index:
                     return i, j
+        logger.info(f'未找到对象{index}')
+        return -1, -1
 
-    def bfs(self, obs: np.ndarray, target: int):
+    def bfs(self, obs: np.ndarray[int, np.dtype[np.int_]], target: int):
         """
         BFS算法，从start开始搜索，直到找到目标对象target
         """
@@ -101,7 +103,7 @@ class MyAgent(PythonAgent):
         visited = np.zeros_like(obs, dtype=bool)
         visited[start[0]][start[1]] = True
 
-        parent = {start: None}
+        parent: Dict[Tuple[int, int], Optional[Tuple[int, int]]] = {start: None}
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
         while queue:
@@ -125,19 +127,20 @@ class MyAgent(PythonAgent):
                 # 检查边界
                 if 0 <= next_x < obs.shape[0] and 0 <= next_y < obs.shape[1]:
                     # 检查是否可移动且未访问过
+                    next_type:int = int(obs[next_x][next_y])
                     if not visited[next_x][next_y] and self.move_available(
-                        obs[next_x][next_y]
+                        next_type
                     ):
                         visited[next_x][next_y] = True
                         queue.append((next_x, next_y))
                         parent[(next_x, next_y)] = cur
 
-    def move_available(self, type: int):
+    def move_available(self, type: int) -> bool:
         if type == Object.WALL.value:
             return False
         return True
 
-    def transform_from_pos_to_action(self, pos_deque: deque):
+    def transform_from_pos_to_action(self, pos_deque: deque) -> deque:
         # 把位置队列转换成动作队列
         action_deque = deque()
         for i in range(len(pos_deque) - 1):
@@ -151,7 +154,7 @@ class MyAgent(PythonAgent):
                 action_deque.append(Action.East.value)
         return action_deque
 
-    def boy_next_door(self, obs: np.ndarray) -> bool:
+    def boy_next_door(self, obs: np.ndarray[int, np.dtype[np.int_]]) -> bool:
         start = self.locate(obs, Object.PLAYER.value)
         directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
         for dx, dy in directions:

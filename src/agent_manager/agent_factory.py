@@ -1,5 +1,6 @@
 from .agent_interface import AgentInterface
 import importlib
+from loguru import logger
 
 
 class AgentFactory:
@@ -20,3 +21,7 @@ class AgentFactory:
             from .prolog_agent.prolog_agent_interface import PrologAgent
 
             return PrologAgent(conf["agent_config"])
+        
+        else:
+            logger.error(f'Agent的type不支持，目前只能选择python或者prolog,但是您的选择为{conf["agent_config"]["type"]}')
+            exit()

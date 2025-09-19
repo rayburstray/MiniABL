@@ -1,0 +1,12 @@
+# 项目根目录的 pyproject.toml（正确格式）
+
+# --------------------------
+# Ruff 配置（忽略 minihack_env.py 的 F401）
+# --------------------------
+[tool.ruff]
+# 可选：指定 Ruff 检查的 Python 版本（与你的环境匹配，如 3.10）
+
+
+[tool.ruff.per-file-ignores]
+# 忽略 minihack_env.py 的“导入未使用”错误（F401）
+"src/env_manager/minihack_env.py" = ["F401"]

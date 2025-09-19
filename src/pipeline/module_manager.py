@@ -1,6 +1,11 @@
 from ..env_manager.env_factory import EnvFactory
 from ..agent_manager.agent_factory import AgentFactory
 from ..rec_manager.rec_factory import RecFactory
+
+from ..env_manager.env_interface import EnvInterface
+from ..agent_manager.agent_interface import AgentInterface
+from ..rec_manager.rec_interface import RecInterface
+
 from loguru import logger
 import yaml
 
@@ -10,9 +15,9 @@ config_path = "src/config_manager/conf.yaml"
 class ModuleManager:
     def __init__(self, conf: dict):
         # 创建3幻神
-        self.env = EnvFactory.create_env(conf)
-        self.agent = AgentFactory.create_agent(conf)
-        self.rec = RecFactory.create_rec(conf)
+        self.env:EnvInterface = EnvFactory.create_env(conf)
+        self.agent:AgentInterface = AgentFactory.create_agent(conf)
+        self.rec:RecInterface = RecFactory.create_rec(conf)
 
     def step(self):
         # 符号提取部分

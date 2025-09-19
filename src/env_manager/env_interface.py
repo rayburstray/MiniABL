@@ -21,13 +21,19 @@ class EnvInterface(ABC):
         pass
 
     @abstractmethod
-    def step(self):  # 交互
+    def step(self, action:int) -> tuple[np.ndarray, bool]:  # 交互
+        """
+        交互，返回当前状态和是否结束。
+
+        Returns:
+            tuple[np.ndarray, bool]: 当前观测和是否结束。
+        """
         pass
 
     def init_tmp_folder(self):
         if not os.path.exists(tmp_save_path):
             logger.info("检测到没有临时文件夹，正在创建临时文件夹...")
-            os.mkdir(self.tmp_folder)
+            os.mkdir(tmp_save_path)
         img_tmp_path = os.path.join(tmp_save_path, "imgs")
         policy_tmp_path = os.path.join(tmp_save_path, "policy.txt")
         # 图片临时文件夹
