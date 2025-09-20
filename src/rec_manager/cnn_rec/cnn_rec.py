@@ -18,6 +18,7 @@ class VisualRec(RecInterface):
         self.to_tensor = ToTensor()
 
     def recognize(self, obs: np.ndarray) -> np.ndarray:
+        print(obs.shape)
         MinihackDataset.update(img=obs)
         v, h, _ = obs.shape
         v_times, h_times = v // tile_size[0], h // tile_size[1]
