@@ -6,7 +6,7 @@ import torch
 from PIL import Image
 from torchvision.transforms import ToTensor  # 导入 ToTensor
 
-device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
 
 tile_size = (16, 16)
 
@@ -14,8 +14,9 @@ tile_size = (16, 16)
 class VisualRec(RecInterface):
     def __init__(self, conf: dict):
         self.conf = conf
-        self.model = load_model(self.conf["num_classes"])
+        self.model = load_model(self.conf["num_classes"], self.conf['device'])
         self.to_tensor = ToTensor()
+        self.device = torch.device( self.conf['device'] )
 
     def recognize(self, obs: np.ndarray) -> np.ndarray:
         print(obs.shape)
@@ -35,8 +36,8 @@ class VisualRec(RecInterface):
                 tile_tensor = self.to_tensor(
                     tile
                 )  # 转换为Tensor（注意可能需要调整数据类型）
-                tile_tensor = tile_tensor.unsqueeze(0).to(device)
-                tile_tensor = tile_tensor.to(device)  # 转移到模型所在设备
+                tile_tensor = tile_tensor.unsqueeze(0).to(self.device)
+                tile_tensor = tile_tensor.to(self.device)  # 转移到模型所在设备
                 tile_rec = self.model(tile_tensor)
                 tile_rec = tile_rec.squeeze(0)
                 tile_rec = tile_rec.argmax(dim=0)

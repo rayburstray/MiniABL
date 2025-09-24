@@ -2,6 +2,7 @@
 # 配置文件
 # ===========================
 
+
 # 环境设置：
 env_config:
   type: "minihack" # minigrid, minihack
@@ -9,15 +10,16 @@ env_config:
 
 # 视觉模块设置
 vision_config:
-  type: "none" # none, cnn, vlm, gt
+  type: "cnn" # none, cnn, vlm, gt
   cnn_config:
+    device: "cuda:7"
     num_classes: 7 # 分类器的label数目
 
 # 智能体策略设置
 agent_config:
   type: "python" # python, prolog
-  name: "vlm_agent" # python/prolog文件名称(不需要加文件后缀与完整前置文件路径)
-  vlm_config: # 目前只支持豆包
+  name: "test_python_agent" # python/prolog文件名称(不需要加文件后缀与完整前置文件路径)
+  vlm_config: # 目前只支持豆包, 如果你用的是vlm才需要填写
     api_key: 'dbxxxx'
     model_name: "doubao-seed-1-6-vision-250815"
     prompt: "给你一张minihack的游戏截图，这是一个比较复古的像素风游戏，地图由网格组成，player的任务是寻找到钥匙，开门，并到达目标点，黑色区域可能需要你走近之后才能看清，棕色的物体可能是门，但是你需要先找到钥匙才能开门，如果没有看到钥匙可能是因为钥匙在黑色的未探索区域中，请注意避让障碍物，例如未开锁的门以及墙壁，如果你发现你上一步执行移动行为之后，图片没有发生变化，那么说明你可能撞墙了，请你描述一下这个图片的内容，同时使用tool输出玩家下一步应该执行的动作"

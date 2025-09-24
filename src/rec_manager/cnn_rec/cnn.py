@@ -8,12 +8,12 @@ from tqdm import tqdm
 from PIL import Image
 from loguru import logger
 
-device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
 model_path = "./src/rec_manager/cnn_rec/cnn_model.pth"
 
 
 class SimpleCNN(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes, device):
         super().__init__()
         self.features = nn.Sequential(
             nn.Conv2d(3, 8, kernel_size=3, padding=1),
@@ -26,6 +26,7 @@ class SimpleCNN(nn.Module):
         self.classifier = nn.Sequential(
             nn.Linear(16 * 4 * 4, 64), nn.ReLU(), nn.Linear(64, num_classes)
         )
+        self.device = device
 
     def forward(self, x):
         x = self.features(x)
@@ -34,25 +35,26 @@ class SimpleCNN(nn.Module):
         return x
 
 
-def load_model(num_classes):
+def load_model(num_classes, device:str):
     if not os.path.exists(model_path):
         logger.info("没有检测到cnn模型, 为您训练一个捏")
-        model = train_model(num_classes)
+        device = torch.device(device)
+        model = train_model(num_classes, device)
         model.eval()
         model.to(device)
         return model
 
     else:
-        model = SimpleCNN(num_classes)
+        model = SimpleCNN(num_classes, device)
         model.load_state_dict(torch.load(model_path))
         model.eval()
         model.to(device)
         return model
 
 
-def train_model(num_classes, epochs=100, batch_size=32):
+def train_model(num_classes, device, epochs=100, batch_size=32):
     dataset = MinihackDataset()
-    model = SimpleCNN(num_classes)
+    model = SimpleCNN(num_classes, device)
     model.to(device)
     if dataset.length == 0:
         logger.info("tile数据为空，停止模型训练")
