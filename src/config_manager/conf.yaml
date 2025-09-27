@@ -5,8 +5,47 @@
 
 # 环境设置：
 env_config:
-  type: "minihack" # minigrid, minihack
-  task: "MiniHack-KeyRoom-S5-v0"
+  type: "minigrid" # minigrid, minihack
+  task: "custom" #MiniGrid-LavaGapS7-v0,   MiniHack-KeyRoom-S5-v0 custom
+
+  minigrid_config:
+    highlight: False
+    custom_maps:
+      mission_descripthon: "宇宙最强项目a2rl的课程学习捏"
+      map_nums: 3
+      max_steps_per_map: 6e4
+      max_steps_per_episode: null
+      highlight: False
+      map1:
+        - [x, x, x, x, x, x, x, x]
+        - [x, x, x, x, x, x, x, x]
+        - [x, E, E, x, -, -, G, x]
+        - [x, -, -, x, -, -, -, x]
+        - [x, -, -, x, -, x, x, x]
+        - [x, -, -, -, -, -, -, x]
+        - [x, E, -, -, -, S, E, x]
+        - [x, x, x, x, x, x, x, x]
+      map2:
+        - [x, x, x, x, x, x, x, x]
+        - [x, x, x, x, x, x, x, x]
+        - [x, E, E, x, -, -, G, x]
+        - [x, S, -, x, -, -, -, x]
+        - [x, -, -, x, D, x, x, x]
+        - [x, -, -, -, -, -, -, x]
+        - [x, E, -, -, -, -, E, x]
+        - [x, x, x, x, x, x, x, x]
+      map3:
+        - [x, x, x, x, x, x, x, x]
+        - [x, x, x, x, x, x, x, x]
+        - [x, E, E, x, -, -, G, x]
+        - [x, -, -, x, -, -, -, x]
+        - [x, K, -, x, D, x, x, x]
+        - [x, -, -, -, -, -, -, x]
+        - [x, E, -, -, -, S, E, x]
+        - [x, x, x, x, x, x, x, x]
+
+    
+
 
 # 视觉模块设置
 vision_config:

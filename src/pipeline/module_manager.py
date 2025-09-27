@@ -27,14 +27,14 @@ class ModuleManager:
         logger.info(action)
         # logger.info(f'动作为{action}')
         # 环境交互
-        obs, terminated = self.env.step(action)
-        return obs, terminated
+        obs, reward, terminated = self.env.step(action)
+        return obs, reward, terminated
 
     def calculate(self):
         terminated = False
         step = 0
         while not terminated:
-            obs, terminated = self.step()
+            obs, reward, terminated = self.step()
             step += 1
         logger.info(f"游戏结束，步数{step}")
         self.env.generate_gif()

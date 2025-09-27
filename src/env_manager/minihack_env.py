@@ -32,8 +32,8 @@ class FinalEnv(EnvInterface):
         # logger.info('获取环境图像')
         return self.obs["pixel"]
 
-    def step(self, action:int) -> tuple[np.ndarray, bool]:
-        self.obs, _, terminated, _, _ = self.env.step(action)
+    def step(self, action:int) -> tuple[np.ndarray, int, bool]:
+        self.obs, reward, terminated, truncated, _ = self.env.step(action)
         self.save_img(self.obs["pixel"])
         self.save_policy(action)
-        return (self.obs, terminated)
+        return (self.obs, reward, terminated or truncated)
