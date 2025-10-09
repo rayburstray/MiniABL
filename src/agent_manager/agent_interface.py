@@ -6,7 +6,7 @@ class AgentInterface(ABC):
         pass
 
     @abstractmethod
-    def act(self, obs: np.ndarray) -> int:
+    def act(self, obs: np.ndarray, pre_reward:int, pre_terminated:bool) -> int:
         """
         :param obs: observation(此obs为符号化的而非原始像素，当然若rec为none的话，obs为原始像素)
         :return: action

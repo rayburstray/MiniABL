@@ -12,6 +12,23 @@ from minigrid.core.world_object import Door, Goal, Key, Wall, Lava
 from minigrid.manual_control import ManualControl
 from minigrid.minigrid_env import MiniGridEnv
 
+'''
+0: left 0: 向左
+
+1: right 1: 右
+
+2: up 2: 上
+
+3: toggle 3: 切换
+
+4: pickup 4: 拾取
+
+5: drop 5: 丢弃
+
+6: done/noop 6: 完成/无操作
+'''
+
+
 class FinalEnv(EnvInterface):
     def __init__(self, conf):
         super().__init__()
@@ -28,7 +45,7 @@ class FinalEnv(EnvInterface):
             
 
         self.obs, _ = self.env.reset()
-        logger.info(self.obs)
+        logger.info(self.obs.shape)
         self.save_img(self.obs)
         exit()
 
@@ -39,10 +56,10 @@ class FinalEnv(EnvInterface):
     def step(self, action:int)->tuple[np.ndarray, bool]:
         # action = action + 1
         # return (np.array([0,0]), False)
-        self.obs, _, terminated, truncated, _ = self.env.step(action)
+        self.obs, reward, terminated, truncated, info = self.env.step(action)
         self.save_img(self.obs)
         self.save_policy(action)
-        return (self.obs, terminated or truncated)
+        return (self.obs, reward, terminated, truncated, info)
     
 class CustomMinigridEnvManager:
     def __init__(self, conf:dict):
@@ -80,7 +97,14 @@ class CustomMinigridEnvManager:
         可执行自动切换地图的功能
         '''
         self.map_steps += 1
-        obs, reward, terminated, truncated, info = self.env.step(action)
+        if action is not -1:
+            obs, reward, terminated, truncated, info = self.env.step(action)
+        else: # 如果action为-1，则重置地图
+            obs, info = self. env.reset()
+            reward = 0
+            terminated = False
+            truncated = False
+
         if self.map_steps > self.max_map_steps: # 如果某一个地图的步数超过最大步数，则进入下一个地图
             self.current_index += 1
             if self.current_index > self.max_index: # 如果所有地图已经跑完，则结束程序

@@ -58,6 +58,7 @@ vision_config:
 agent_config:
   type: "python" # python, prolog
   name: "test_python_agent" # python/prolog文件名称(不需要加文件后缀与完整前置文件路径)
+
   vlm_config: # 目前只支持豆包, 如果你用的是vlm才需要填写
     api_key: 'dbxxxx'
     model_name: "doubao-seed-1-6-vision-250815"
@@ -80,6 +81,13 @@ agent_config:
                         }
                     }
                 }
+                
+  a2rl_config:
+    env:
+      type: "minigrid"
+    network:
+      input_shape: None # 如果设置为None，那么会自动判断输入的尺寸，即根据tmp_data/imgs/0.png的尺寸设定输入大小
+      action_dim: 7
 
 
 

@@ -14,7 +14,7 @@ class PrologAgent(AgentInterface):
         )
         self.prolog.consult(self.prolog_path)
 
-    def act(self, obs: np.ndarray):
+    def act(self, obs: np.ndarray, pre_reward:int, pre_terminated:bool):
         obs_list = obs.tolist()  # prolog只能处理list，好弱
         return next(self.prolog.query(f"process_observation({obs_list}, Action)"))[
             "Action"

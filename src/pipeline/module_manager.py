@@ -19,11 +19,11 @@ class ModuleManager:
         self.agent:AgentInterface = AgentFactory.create_agent(conf)
         self.rec:RecInterface = RecFactory.create_rec(conf)
 
-    def step(self):
+    def step(self, pre_reward, pre_terminated):
         # 符号提取部分
         recognision = self.rec.recognize(self.env.render())
         # agent动作选择
-        action = self.agent.act(recognision)
+        action = self.agent.act(recognision, pre_reward, pre_terminated)
         logger.info(action)
         # logger.info(f'动作为{action}')
         # 环境交互
@@ -33,8 +33,12 @@ class ModuleManager:
     def calculate(self):
         terminated = False
         step = 0
+        pre_reward = 0
+        pre_terminated = False
         while not terminated:
-            obs, reward, terminated = self.step()
+            obs, reward, terminated = self.step(pre_reward, pre_terminated)
+            pre_reward = reward
+            pre_terminated = terminated
             step += 1
         logger.info(f"游戏结束，步数{step}")
         self.env.generate_gif()
