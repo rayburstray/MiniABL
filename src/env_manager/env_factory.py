@@ -1,24 +1,19 @@
 
 from loguru import logger
-from .env_interface import EnvInterface
+from .env_interface import EnvsInterface
+import minihack
 
-class EnvFactory:
+class EnvsFactory:
     @staticmethod
-    def create_env(conf: dict) -> EnvInterface:
+    def create_envs(conf: dict) -> EnvsInterface:
         """
-        通过配置创建环境
+        通过配置创建任务集
         """
-        if conf["env_config"]["type"] == "minigrid":
-            from .minigrid_env import FinalEnv
-
-            return FinalEnv(conf["env_config"])
-
-        elif conf["env_config"]["type"] == "minihack":
-            from .minihack_env import FinalEnv
-
-            return FinalEnv(conf["env_config"])
-        
-        else:
-            logger.error(f"环境配置参数错误，目前只支持minihack和minigrid，而您的参数为{conf['env_config']['type']}")
-            exit()
-    
+        if conf['envs']['base'] == 'minigrid':
+            from.minigrid_env import FinalEnvs
+            return FinalEnvs(conf)
+            pass
+        elif conf['envs']['base'] == 'minihack':
+            from.minihack_env import FinalEnvs
+            return FinalEnvs(conf)
+            pass

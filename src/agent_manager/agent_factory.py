@@ -1,27 +1,13 @@
-from .agent_interface import AgentInterface
+from .agents.base_agent.agent_interface import AgentInterface
 import importlib
-from loguru import logger
-
 
 class AgentFactory:
     @staticmethod
     def create_agent(conf: dict) -> AgentInterface:
-        if conf["agent_config"]["type"] == "python":
-            name = conf["agent_config"]["name"]
-            # 动态导入模块
-            module = importlib.import_module(
-                f".python_agent.{name}", package=__package__
+        agent_name = conf['agent']['name']
+        # 动态导入模块
+        module = importlib.import_module(
+                f".agents.{agent_name}.agent", package=__package__
             )
-            # 获取模块中的类
-            MyAgent = getattr(module, "MyAgent")
-            return MyAgent(conf["agent_config"])
-
-        elif conf["agent_config"]["type"] == "prolog":
-            name = conf["agent_config"]["name"]
-            from .prolog_agent.prolog_agent_interface import PrologAgent
-
-            return PrologAgent(conf["agent_config"])
-        
-        else:
-            logger.error(f'Agent的type不支持，目前只能选择python或者prolog,但是您的选择为{conf["agent_config"]["type"]}')
-            exit()
+        Agent = getattr(module, "Agent")
+        return Agent(conf)

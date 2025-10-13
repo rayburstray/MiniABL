@@ -1,5 +1,4 @@
-from pygments import highlight
-from .env_interface import EnvInterface
+from .env_interface import  EnvsInterface
 import numpy as np
 import gymnasium as gym
 import minigrid
@@ -27,96 +26,6 @@ from minigrid.minigrid_env import MiniGridEnv
 
 6: done/noop 6: 完成/无操作
 '''
-
-
-class FinalEnv(EnvInterface):
-    def __init__(self, conf):
-        super().__init__()
-        self.conf = conf
-        self.task = conf["task"]
-        self.highlight:bool = conf["minigrid_config"]["highlight"]
-        if not self.task ==  "custom":
-            self.env = gym.make(self.task, highlight = self.highlight)
-            self.env = RGBImgObsWrapper(self.env)
-        else:
-            self.custom_conf = self.conf['minigrid_config']['custom_maps']
-            logger.info(self.custom_conf)
-            self.env = CustomMinigridEnvManager(self.custom_conf)
-            
-
-        self.obs, _ = self.env.reset()
-        logger.info(self.obs.shape)
-        self.save_img(self.obs)
-        exit()
-
-
-    def render(self):
-        return self.obs
-    
-    def step(self, action:int)->tuple[np.ndarray, bool]:
-        # action = action + 1
-        # return (np.array([0,0]), False)
-        self.obs, reward, terminated, truncated, info = self.env.step(action)
-        self.save_img(self.obs)
-        self.save_policy(action)
-        return (self.obs, reward, terminated, truncated, info)
-    
-class CustomMinigridEnvManager:
-    def __init__(self, conf:dict):
-        self.conf = conf
-        self.current_index = 1 # 当前的地图序号
-        self.max_index = self.conf['map_nums']
-        self.map_steps = 0 # 表示在目前地图已经走了多少步，达到最大步数后，换地图
-        self.max_map_steps = conf["max_steps_per_map"]
-        self.max_episode_steps = conf['max_steps_per_episode']
-        self.highlight = conf["highlight"]
-        self.set_env(self.current_index) # 初始化地图
-
-    def set_env(self, index:int):
-        '''
-        用于设置地图
-        '''
-        self.map_steps = 0 # 重置地图步数
-        self.env_map = np.array(self.conf[f'map{index}'])
-        self.height = self.env_map.shape[0]
-        self.width = self.env_map.shape[1]
-        self.env = CustomMinigridEnv(
-            width = self.width,
-            height = self.height,
-            max_steps = self.max_episode_steps,
-            map = self.env_map,
-            highlight = self.highlight
-        )
-        self.env = RGBImgObsWrapper(self.env)
-        
-        logger.info(f'已切换至map_{index} shape: {self.env_map.shape}')
-
-
-    def step(self, action:int):
-        '''
-        可执行自动切换地图的功能
-        '''
-        self.map_steps += 1
-        if action is not -1:
-            obs, reward, terminated, truncated, info = self.env.step(action)
-        else: # 如果action为-1，则重置地图
-            obs, info = self. env.reset()
-            reward = 0
-            terminated = False
-            truncated = False
-
-        if self.map_steps > self.max_map_steps: # 如果某一个地图的步数超过最大步数，则进入下一个地图
-            self.current_index += 1
-            if self.current_index > self.max_index: # 如果所有地图已经跑完，则结束程序
-                logger.info('所有地图已经跑完，结束程序捏')
-                exit()
-            self.set_env(self.current_index)
-
-        return obs, reward, terminated, truncated, info
-    
-    def reset(self):
-        obs, info = self.env.reset()
-        return obs['image'], info
 
     
 
@@ -177,3 +86,52 @@ class CustomMinigridEnv(MiniGridEnv):
                 self.handle_map(i, j, self.map[j][i])
                 
 
+
+class FinalEnvs(EnvsInterface):
+    def __init__(self, conf: dict):
+        super().__init__(conf)
+        self.build_envs()
+
+    def build_envs(self):
+        for i in range(self.env_nums):
+            self.envs.append(gym.vector.SyncVectorEnv(
+                [self.build_env(i) for j in range(self.parallel)]
+            ))
+
+        pass
+
+    def build_env(self, index:int):
+        '''
+        index 表示第i个任务
+        '''
+        env_to_build_config = self.conf['envs']['env_list'][index]
+        def thunk():
+            if env_to_build_config['type'] == 'default':
+                env_name = env_to_build_config['name']
+                env = gym.make(env_name, highlight=False)
+                pass
+            elif env_to_build_config['type'] == 'custom':
+                env_map = np.array(env_to_build_config['map'])
+                height = env_map.shape[0]
+                width = env_map.shape[1]
+                env = CustomMinigridEnv(
+                    width = width,
+                    height = height,
+                    max_steps = env_to_build_config['max_steps_per_episode'],
+                    map = env_map,
+                    highlight = False
+                )
+
+                pass
+            return env
+        return thunk
+    
+
+    def get_current_env(self):
+        return self.envs[self.current_env_idx]
+    
+    def update_env(self):
+        self.current_env_idx += 1
+        if self.current_env_idx >= self.env_nums:
+            logger.info('所有任务已经跑完，结束程序捏')
+            exit()
