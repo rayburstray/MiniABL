@@ -40,7 +40,7 @@ class Agent(AgentInterface):
 
         pass
 
-    def learn(self, env):
+    def learn(self, idx, env, max_steps):
         logger.info('该模型没有learn模式，请重新调整config')
         exit()
         pass

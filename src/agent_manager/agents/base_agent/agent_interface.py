@@ -5,9 +5,9 @@ class AgentInterface(ABC):
         pass
     
     @abstractmethod
-    def learn(self, env):
+    def inference(self, idx, emv, max_steps):
         pass
 
     @abstractmethod
-    def inference(self, env):
+    def learn(self, idx, env, max_steps):
         pass

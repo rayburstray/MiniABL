@@ -122,7 +122,7 @@ class FinalEnvs(EnvsInterface):
                     highlight = False
                 )
 
-                pass
+            env = RGBImgObsWrapper(env)
             return env
         return thunk
     
