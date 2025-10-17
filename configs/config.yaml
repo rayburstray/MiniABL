@@ -1,0 +1,6 @@
+defaults:
+  # - _self_
+  - agent: minigrid_ppo
+  - env: minigrid
+
+device: "cuda:0"

@@ -1,17 +1,23 @@
-import yaml
-from src.agent_manager.agent_factory import AgentFactory
-from src.env_manager.env_factory import EnvsFactory
+import hydra
+from omegaconf import DictConfig
 from loguru import logger
-def get_yaml_conf(path)->dict:
-    return yaml.load(open(path), Loader=yaml.FullLoader)
+
+from miniabl.agent_manager.agent_factory import AgentFactory
+from miniabl.env_manager.env_factory import EnvsFactory
+
+@hydra.main(version_base=None, config_path="configs", config_name="config")
+def main(cfg: DictConfig) -> None:
+    """
+    Main training loop.
+    """
+    logger.info(cfg)
+    agent = AgentFactory.create_agent(cfg)
+    envs = EnvsFactory.create_envs(cfg)
+    for i in range(cfg.env.env_nums):
+        agent.learn(i, envs.envs[i], envs.envs_steps[i])
 
 if __name__ == "__main__":
-    conf = get_yaml_conf('src/config_manager/new_conf_minigrid.yaml')
-    logger.info(conf)
-    agent = AgentFactory.create_agent(conf)
-    envs = EnvsFactory.create_envs(conf)
-    for i in range(conf['envs']['env_nums']):
-        agent.learn(i, envs.envs[i], envs.envs_steps[i])
+    main()
     
 
 

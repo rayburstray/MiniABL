@@ -1,4 +1,33 @@
-# 项目根目录的 pyproject.toml（正确格式）
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniabl"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "gymnasium",
+    "loguru",
+    "minihack",
+    "minigrid",
+    "nle",
+    "numpy",
+    "Pillow",
+    "pyswip",
+    "PyYAML",
+    "sympy",
+    "torch",
+    "torchvision",
+    "tqdm",
+    "wandb",
+    "hydra-core",
+    "opencv-python",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 # --------------------------
 # Ruff 配置（忽略 minihack_env.py 的 F401）

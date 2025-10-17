@@ -1,0 +1,23 @@
+maps:
+  - "MiniGrid-KeyCorridorS3R1-v0"
+  - "MiniGrid-KeyCorridorS3R2-v0"
+  - "MiniGrid-KeyCorridorS3R3-v0"
+  - "MiniGrid-KeyCorridorS4R3-v0"
+  - "MiniGrid-KeyCorridorS5R3-v0"
+  - "MiniGrid-KeyCorridorS6R3-v0"
+  - 
+    - "xxxxxxxx"
+    - "xS-D---x"
+    - "x--x---x"
+    - "x--x--Gx"
+    - "x--x---x"
+    - "xK-----x"
+    - "xxxxxxxx"
+  - 
+    - "xxxxxxxx"
+    - "xS-----x"
+    - "x--x---x"
+    - "x--x--Gx"
+    - "x--x---x"
+    - "xK-D---x"
+    - "xxxxxxxx"

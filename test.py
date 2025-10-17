@@ -1,6 +1,6 @@
 import yaml
-from src.agent_manager.agent_factory import AgentFactory
-from src.env_manager.env_factory import EnvsFactory
+from miniabl.agent_manager.agent_factory import AgentFactory
+from miniabl.env_manager.env_factory import EnvsFactory
 from loguru import logger
 def get_yaml_conf(path)->dict:
     return yaml.load(open(path), Loader=yaml.FullLoader)
