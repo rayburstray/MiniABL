@@ -1,9 +1,8 @@
 defaults:
-  - maps
+  - minigrid_maps: easy_small_maps
 
 base: "minigrid"
 env_nums: 1 # 环境的种类数量
 parallel: 4 # 环境的并行数量
-steps_per_train: 2048
 max_steps_per_episode: 1000
 # max_steps_per_map: 100000

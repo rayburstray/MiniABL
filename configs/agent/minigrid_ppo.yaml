@@ -2,6 +2,7 @@ name: "minigrid_keyroom_ppo_agent"
 action_model:
   # save_path: "src/agent_manager/agents/minigrid_keyroom_ppo_agent/submodules/ppo.pth"
   save_folder: "results/"
+  steps_per_train: 2048
   input_shape: [64, 64, 3]
   output_shape: 6
   lr: 2.5e-4

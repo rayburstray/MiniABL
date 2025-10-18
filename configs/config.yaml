@@ -1,5 +1,5 @@
 defaults:
-  # - _self_
+  - _self_
   - agent: minigrid_ppo
   - env: minigrid
 
